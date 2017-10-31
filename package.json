@@ -47,5 +47,8 @@
     "start": "electron .",
     "watch": "cross-env NODE_ENV=development webpack --progress --watch"
   },
-  "typings": "lib/index.d.ts"
+  "typings": "lib/index.d.ts",
+  "dependencies": {
+    "asynckeystate": "^0.0.2"
+  }
 }
