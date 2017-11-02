@@ -5,6 +5,9 @@
   "bugs": {
     "url": "https://github.com/progre/typescript-boilerplate/issues"
   },
+  "dependencies": {
+    "asynckeystate": "^0.0.2"
+  },
   "devDependencies": {
     "@progre/electron-packer": "^0.1.0",
     "@progre/tslint-config": "^5.1.0",
@@ -20,7 +23,7 @@
     "tslint": "^5.7.0",
     "tslint-language-service": "^0.9.6",
     "tsutils": "1.6.0",
-    "typescript": "^2.5.2",
+    "typescript": "^2.6.1",
     "uglify-save-license": "^0.4.1",
     "validate-commit-msg": "^2.14.0",
     "webpack": "^3.5.6"
@@ -43,12 +46,10 @@
     "commitmsg": "validate-commit-msg",
     "debug-build": "cross-env NODE_ENV=development webpack --progress",
     "package": "electron-packer",
+    "preinstall": "npx use-yarn",
     "release-build": "cross-env NODE_ENV=production webpack --progress",
     "start": "electron .",
     "watch": "cross-env NODE_ENV=development webpack --progress --watch"
   },
-  "typings": "lib/index.d.ts",
-  "dependencies": {
-    "asynckeystate": "^0.0.2"
-  }
+  "typings": "lib/index.d.ts"
 }

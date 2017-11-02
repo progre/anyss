@@ -1,7 +1,4 @@
-import module from './module';
+import Application from './applications/Application';
 
-async function main() {
-  await module();
-}
-
-main().catch((e) => { console.error(e.stack || e); });
+// tslint:disable-next-line:no-unused-expression
+new Application();

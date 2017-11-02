@@ -1,6 +1,5 @@
 try { require('source-map-support').install(); } catch (e) { /* NOP */ }
 import { app, BrowserWindow } from 'electron';
-import module from './module';
 
 async function main() {
   await new Promise((resolve, reject) => app.once('ready', resolve));
@@ -12,6 +11,7 @@ async function main() {
     show: true,
   });
   win.loadURL(`file://${__dirname}/public/index.html`);
+  win.webContents.send
   await module();
 }
 
