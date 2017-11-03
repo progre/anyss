@@ -1,21 +1,27 @@
 {
-  "name": "typescript-boilerplate",
-  "description": "Boilerplate for TypeScript project.",
-  "version": "1.0.0",
+  "name": "micspam",
+  "description": "Simple micspam tool.",
+  "version": "0.1.0",
   "bugs": {
-    "url": "https://github.com/progre/typescript-boilerplate/issues"
+    "url": "https://github.com/progre/micspam/issues"
   },
   "dependencies": {
-    "asynckeystate": "^0.0.2"
+    "asynckeystate": "^0.0.2",
+    "copy-to-clipboard": "^3.0.8",
+    "strip-json-comments": "^2.0.1"
   },
   "devDependencies": {
     "@progre/electron-packer": "^0.1.0",
     "@progre/tslint-config": "^5.1.0",
     "@types/node": "^8.0.28",
+    "@types/strip-json-comments": "^0.0.30",
     "copy-webpack-plugin": "^4.0.1",
+    "cpx": "^1.5.0",
     "cross-env": "^5.0.5",
+    "cross-zip": "^2.1.5",
     "del-cli": "^1.1.0",
-    "electron": "^1.8.0",
+    "electron": "^1.7.9",
+    "electron-rebuild": "^1.6.0",
     "husky": "^0.14.3",
     "npm-run-all": "^4.1.1",
     "source-map-support": "^0.4.18",
@@ -32,21 +38,20 @@
     "lib",
     "LICENSE"
   ],
-  "homepage": "https://github.com/progre/typescript-boilerplate#readme",
-  "license": "Unlicense",
+  "homepage": "https://github.com/progre/micspam#readme",
+  "license": "MIT",
   "main": "lib/index.js",
   "private": true,
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/progre/typescript-boilerplate.git"
+    "url": "git+https://github.com/progre/micspam.git"
   },
   "scripts": {
     "build": "run-p clean release-build",
     "clean": "del lib",
     "commitmsg": "validate-commit-msg",
     "debug-build": "cross-env NODE_ENV=development webpack --progress",
-    "package": "electron-packer",
-    "preinstall": "npx use-yarn",
+    "package": "node ./pack.js",
     "release-build": "cross-env NODE_ENV=production webpack --progress",
     "start": "electron .",
     "watch": "cross-env NODE_ENV=development webpack --progress --watch"

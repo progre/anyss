@@ -1,15 +1,21 @@
 import * as fs from 'fs';
-import { promisify } from 'util';
-const readFile = promisify(fs.readFile);
+import * as stripJsonComments from 'strip-json-comments';
 
 export async function fetch() {
-  return <{
+  type Config = {
     playKeys: ReadonlyArray<string>;
+    outputWithDefault: boolean;
     outputDevice: string;
-    soundCombinationKey: string;
+    modifierKey: string;
     sounds: { [key: string]: string; }
-  }>
-    JSON.parse(
-      await readFile(`${__dirname}/../res/config.json`, { encoding: 'utf8' }),
-    );
+  };
+  return new Promise<Config>((resolve, reject) => {
+    fs.readFile(`${__dirname}/../res/config.json`, { encoding: 'utf8' }, (err, data) => {
+      if (err != null) {
+        reject(err);
+        return;
+      }
+      resolve(JSON.parse(stripJsonComments(data)));
+    });
+  });
 }

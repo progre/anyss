@@ -1,10 +1,16 @@
 export default class AudioPlayer {
+  private defaultAudio: HTMLAudioElement | null;
   private audio = new Audio();
 
-  constructor() {
-    this.audio.onload = () => {
-      console.log('loaded');
-    };
+  setWithDefault(value: boolean) {
+    if (!value && this.defaultAudio != null) {
+      this.defaultAudio = null;
+      return;
+    }
+    if (value && this.defaultAudio == null) {
+      this.defaultAudio = new Audio();
+      return;
+    }
   }
 
   async selectDeviceForLabel(label: string) {
@@ -22,10 +28,24 @@ export default class AudioPlayer {
 
   setSrc(src: string) {
     this.audio.src = src;
+    if (this.defaultAudio != null) {
+      this.defaultAudio.src = src;
+    }
   }
 
   async play() {
-    console.log('play');
-    await this.audio.play();
+    await Promise.all([
+      this.audio.play(),
+      this.defaultAudio == null ? Promise.resolve() : this.defaultAudio.play(),
+    ]);
+  }
+
+  async stop() {
+    this.audio.pause();
+    this.audio.currentTime = 0;
+    if (this.defaultAudio != null) {
+      this.defaultAudio.pause();
+      this.defaultAudio.currentTime = 0;
+    }
   }
 }

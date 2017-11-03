@@ -1,13 +1,8 @@
 import { EventEmitter } from 'events';
+import { KEY_VK } from './keyvk';
 
 const { getAsyncKeyState }
   = <{ getAsyncKeyState(key: number): boolean }>require('asynckeystate');
-
-// https://msdn.microsoft.com/ja-jp/library/windows/desktop/dd375731(v=vs.85).aspx
-const KEY_VK: { [key: string]: number } = {
-  Alt: 0x12,
-  KeyV: 0x56,
-};
 
 export default class GlobalAsyncKey {
   private timer: NodeJS.Timer;
@@ -15,27 +10,29 @@ export default class GlobalAsyncKey {
   private status = new Map<string, boolean>();
 
   constructor(keys: ReadonlyArray<string>) {
-    this.timer = setInterval(
+    this.timer = <any>setInterval(
       () => {
         const current
           = keys.map(key => ({ key, state: getAsyncKeyState(KEY_VK[key]) }));
         current
           .filter(x => !this.status.get(x.key) && x.state)
           .forEach((x) => {
+            this.status.set(x.key, x.state);
             this.eventEmitter.emit(
               'keydown',
               {
-                key: x.key,
+                code: x.key,
               },
             );
           });
         current
           .filter(x => this.status.get(x.key) && !x.state)
           .forEach((x) => {
+            this.status.set(x.key, x.state);
             this.eventEmitter.emit(
               'keyup',
               {
-                key: x.key,
+                code: x.key,
               },
             );
           });

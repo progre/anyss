@@ -33,7 +33,7 @@ const clientSide = {
   output: { filename: 'lib/public/js/[name].js', libraryTarget: 'commonjs2' },
   plugins: [
     new CopyWebpackPlugin(
-      [{ from: 'src/public/', to: 'lib/public/' }],
+      [{ from: 'src/', to: 'lib/' }],
       { ignore: ['test/', '*.ts', '*.tsx'] },
     ),
     ...(
