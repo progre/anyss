@@ -7,7 +7,7 @@ const rebuild = (require('electron-rebuild') || { default: null }).default;
 const mkdir = promisify(require('fs').mkdir);
 const fetch = require('node-fetch');
 const package = require('./package.json');
-const appName = package.name;
+const appName = package.name.replace(/@.+\//, '');
 const electronVersion = package.devDependencies.electron.slice(1);
 
 async function main() {
@@ -17,6 +17,7 @@ async function main() {
   await cpx('LICENSE', 'tmp/dest/');
   await cpx('package.json', 'tmp/dest/');
   await cpx('README*.md', 'tmp/dest/');
+  await exec('npm install --production', { cwd: 'tmp/dest' }).then(printStdout);
   // await execPackageAndZip(electronVersion, 'tmp', 'dest', 'darwin', 'x64', 'src/res/icon.png');
   await execPackageAndZip(electronVersion, 'tmp', 'dest', 'win32', 'ia32', 'src/res/icon.ico');
   // await execPackageAndZip(electronVersion, 'tmp', 'dest', 'linux', 'x64', null);

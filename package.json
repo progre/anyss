@@ -52,8 +52,8 @@
     "url": "git+https://github.com/progre/anyss.git"
   },
   "scripts": {
-    "build": "run-p clean release-build",
-    "clean": "del lib",
+    "build": "run-s clean release-build",
+    "clean": "del lib && del tmp",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
     "commitmsg": "validate-commit-msg",
     "debug-build": "cross-env NODE_ENV=development webpack --progress",
