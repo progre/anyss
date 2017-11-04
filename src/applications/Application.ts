@@ -3,6 +3,7 @@ import {
   Config,
   fetch as fetchConfig,
   prepareConfig,
+  startConfigWatch,
 } from '../infrastructures/config';
 import GlobalAsyncKey from '../infrastructures/GlobalAsyncKey';
 import MainWindow from '../infrastructures/MainWindow';
@@ -20,6 +21,10 @@ export default class Application {
       (async () => {
         await prepareConfig();
         await this.readConfig();
+        startConfigWatch().subscribe(() => {
+          console.log('reload');
+          this.readConfig().catch((e) => { console.error(e); });
+        });
       })().catch((e) => { console.error(e); });
     });
   }

@@ -1,15 +1,9 @@
+import * as chokidar from 'chokidar';
 import { app } from 'electron';
 import * as fs from 'fs';
 import { copy } from 'fs-extra';
+import { Observable } from 'rxjs';
 import * as stripJsonComments from 'strip-json-comments';
-
-export async function prepareConfig() {
-  await copy(
-    `${__dirname}/res/config_default.json`,
-    `${app.getPath('userData')}/config.json`,
-    { overwrite: false },
-  );
-}
 
 export interface Config {
   playKeys: ReadonlyArray<string>;
@@ -19,10 +13,18 @@ export interface Config {
   sounds: { [key: string]: string; };
 }
 
+export async function prepareConfig() {
+  await copy(
+    `${__dirname}/res/config_default.json`,
+    getPath(),
+    { overwrite: false },
+  );
+}
+
 export async function fetch() {
   return new Promise<Config>((resolve, reject) => {
     fs.readFile(
-      `${app.getPath('userData')}/config.json`,
+      getPath(),
       { encoding: 'utf8' },
       (err, data) => {
         if (err != null) {
@@ -33,4 +35,16 @@ export async function fetch() {
       },
     );
   });
+}
+
+export function startConfigWatch() {
+  return new Observable((subscriber) => {
+    chokidar.watch(getPath()).on('all', (event, path) => {
+      subscriber.next();
+    });
+  });
+}
+
+function getPath() {
+  return `${app.getPath('userData')}/config.json`;
 }

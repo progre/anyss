@@ -1,5 +1,5 @@
 import { app, BrowserWindow, ipcMain, WebContents } from 'electron';
-import { Subject, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import {
   ExportAllDevicesToClipboardMessage,
   PlayMessage,
@@ -18,6 +18,7 @@ export default class MainWindow {
       if (this.win.webContents !== event.sender) {
         return;
       }
+      subscriber.next();
       subscriber.complete();
     });
   });

@@ -7,6 +7,7 @@
   },
   "dependencies": {
     "asynckeystate": "^0.0.2",
+    "chokidar": "^1.7.0",
     "copy-to-clipboard": "^3.0.8",
     "fs-extra": "^4.0.2",
     "rxjs": "^5.5.2",
@@ -15,6 +16,7 @@
   "devDependencies": {
     "@progre/electron-packer": "^0.1.0",
     "@progre/tslint-config": "^5.1.0",
+    "@types/chokidar": "^1.7.3",
     "@types/fs-extra": "^4.0.3",
     "@types/node": "^8.0.28",
     "@types/strip-json-comments": "^0.0.30",

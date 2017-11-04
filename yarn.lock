@@ -16,6 +16,12 @@
     tslint-config-airbnb "^5.2.1"
     tslint-microsoft-contrib "^5.0.1"
 
+"@types/chokidar@^1.7.3":
+  version "1.7.3"
+  resolved "https://registry.yarnpkg.com/@types/chokidar/-/chokidar-1.7.3.tgz#ca87a53aa596c01eb93237ab4055edf71dcb9ca6"
+  dependencies:
+    "@types/node" "*"
+
 "@types/fs-extra@^4.0.3":
   version "4.0.3"
   resolved "https://registry.yarnpkg.com/@types/fs-extra/-/fs-extra-4.0.3.tgz#87343b1ab99415b61817ac894ed622355a0ebf67"
