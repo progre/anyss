@@ -1,9 +1,9 @@
 {
-  "name": "micspam",
-  "description": "Simple micspam tool.",
+  "name": "@progre/anyss",
+  "description": "Any game sound selector for sending to voice chat.",
   "version": "0.1.0",
   "bugs": {
-    "url": "https://github.com/progre/micspam/issues"
+    "url": "https://github.com/progre/anyss/issues"
   },
   "dependencies": {
     "asynckeystate": "^0.0.2",
@@ -43,13 +43,13 @@
     "lib",
     "LICENSE"
   ],
-  "homepage": "https://github.com/progre/micspam#readme",
+  "homepage": "https://github.com/progre/anyss#readme",
   "license": "MIT",
   "main": "lib/index.js",
   "private": true,
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/progre/micspam.git"
+    "url": "git+https://github.com/progre/anyss.git"
   },
   "scripts": {
     "build": "run-p clean release-build",
