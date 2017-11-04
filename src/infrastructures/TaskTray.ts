@@ -16,7 +16,7 @@ export default class TaskTray {
       },
       { type: 'separator' },
       {
-        label: 'Open config folter...',
+        label: 'Open config folder...',
         click: params.openFolder,
       },
       { type: 'separator' },
