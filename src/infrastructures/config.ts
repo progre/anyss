@@ -1,5 +1,5 @@
 import * as chokidar from 'chokidar';
-import { app } from 'electron';
+import { app, shell } from 'electron';
 import * as fs from 'fs';
 import { copy } from 'fs-extra';
 import { Observable } from 'rxjs';
@@ -13,6 +13,10 @@ export interface Config {
   sounds: { [key: string]: string; };
 }
 
+export function openFolder() {
+  shell.showItemInFolder(`${app.getPath('userData')}/*`);
+}
+
 export async function prepareConfig() {
   await copy(
     `${__dirname}/res/config_default.json`,
@@ -22,7 +26,7 @@ export async function prepareConfig() {
 }
 
 export async function fetch() {
-  return new Promise<Config>((resolve, reject) => {
+  const text = await new Promise<string>((resolve, reject) => {
     fs.readFile(
       getPath(),
       { encoding: 'utf8' },
@@ -31,10 +35,11 @@ export async function fetch() {
           reject(err);
           return;
         }
-        resolve(JSON.parse(stripJsonComments(data)));
+        resolve(data);
       },
     );
   });
+  return <Config>JSON.parse(stripJsonComments(text));
 }
 
 export function startConfigWatch() {

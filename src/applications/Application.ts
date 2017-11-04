@@ -1,7 +1,8 @@
-import { globalShortcut } from 'electron';
+import { app, BrowserWindow, dialog, globalShortcut, shell } from 'electron';
 import {
   Config,
   fetch as fetchConfig,
+  openFolder,
   prepareConfig,
   startConfigWatch,
 } from '../infrastructures/config';
@@ -17,8 +18,11 @@ export default class Application {
 
   constructor() {
     this.win.ready.subscribe(() => {
-      this.taskTray = new TaskTray(() => {
-        this.win.exportAllDevicesToClipboard();
+      this.taskTray = new TaskTray({
+        openFolder,
+        exportAllDevicesToClipboard: () => {
+          this.win.exportAllDevicesToClipboard();
+        },
       });
       (async () => {
         await prepareConfig();
@@ -30,7 +34,13 @@ export default class Application {
   }
 
   private async readConfig() {
-    const config = await fetchConfig();
+    let config;
+    try {
+      config = await fetchConfig();
+    } catch (e) {
+      showConfigErrorDialog(e);
+      return;
+    }
     this.win.selectDeviceForLabel(config);
     this.initGlobalAsyncKey(config);
     this.initGlobalShortcut(config);
@@ -54,4 +64,21 @@ export default class Application {
       });
     });
   }
+}
+
+function showConfigErrorDialog(e: Error) {
+  dialog.showMessageBox(
+    <any>{
+      type: 'error',
+      title: 'micspam',
+      message: `Failed to read config.json:\n  ${e.message}`,
+      buttons: ['Open config folder', 'Close'],
+    },
+    (num) => {
+      if (num !== 0) {
+        return;
+      }
+      openFolder();
+    },
+  );
 }
