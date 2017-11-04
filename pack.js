@@ -1,3 +1,4 @@
+const { promisify } = require('util');
 const exec = promisify(require('child_process').exec);
 const cpx = promisify(require('cpx').copy);
 const zip = promisify(require('cross-zip').zip);
@@ -5,7 +6,6 @@ const electronPackager = promisify(require('electron-packager'));
 const rebuild = (require('electron-rebuild') || { default: null }).default;
 const mkdir = promisify(require('fs').mkdir);
 const fetch = require('node-fetch');
-const { promisify } = require('util');
 const package = require('./package.json');
 const appName = package.name;
 const electronVersion = package.devDependencies.electron.slice(1);
@@ -17,9 +17,8 @@ async function main() {
   await cpx('LICENSE', 'tmp/dest/');
   await cpx('package.json', 'tmp/dest/');
   await cpx('README*.md', 'tmp/dest/');
-  await exec('npm install --production', { cwd: 'tmp/dest' }).then(printStdout);
   // await execPackageAndZip(electronVersion, 'tmp', 'dest', 'darwin', 'x64', 'src/res/icon.png');
-  await execPackageAndZip(electronVersion, 'tmp', 'dest', 'win32', 'ia32', 'src/res/icon.png');
+  await execPackageAndZip(electronVersion, 'tmp', 'dest', 'win32', 'ia32', 'src/res/icon.ico');
   // await execPackageAndZip(electronVersion, 'tmp', 'dest', 'linux', 'x64', null);
 }
 
@@ -39,13 +38,13 @@ async function execPackageAndZip(version, cwd, path, platform, arch, icon) {
         .then(() => callback())
         .catch((error) => callback(error));
     }],
-    dir: `${cwd}/${path}`,
+    dir: `${cwd}\\${path}`,
     name: appName,
     platform,
     arch,
     version,
     icon,
-    asar: false,
+    asar: true,
     out: cwd
   }).then(printStdout);
   await zip(zipPath, `${cwd}/${appName}-${os}.zip`);

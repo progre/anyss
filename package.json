@@ -57,6 +57,7 @@
     "commitmsg": "validate-commit-msg",
     "debug-build": "cross-env NODE_ENV=development webpack --progress",
     "package": "node ./pack.js",
+    "postinstall": "electron-rebuild",
     "release-build": "cross-env NODE_ENV=production webpack --progress",
     "start": "electron .",
     "watch": "cross-env NODE_ENV=development webpack --progress --watch"
