@@ -17,12 +17,12 @@ export default class Application {
 
   constructor() {
     this.win.ready.subscribe(() => {
-      this.taskTray = new TaskTray(() => { this.win.exportAllDevicesToClipboard(); });
+      this.taskTray = new TaskTray(() => {
+        this.win.exportAllDevicesToClipboard();
+      });
       (async () => {
         await prepareConfig();
-        await this.readConfig();
         startConfigWatch().subscribe(() => {
-          console.log('reload');
           this.readConfig().catch((e) => { console.error(e); });
         });
       })().catch((e) => { console.error(e); });
