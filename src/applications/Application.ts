@@ -1,5 +1,11 @@
-import { BrowserWindow, globalShortcut, ipcMain, WebContents } from 'electron';
-import { fetch as fetchConfig } from '../infrastructures/config';
+import {
+  app,
+  BrowserWindow,
+  globalShortcut,
+  ipcMain,
+  WebContents,
+} from 'electron';
+import { fetch as fetchConfig, prepareConfig } from '../infrastructures/config';
 import GlobalAsyncKey from '../infrastructures/GlobalAsyncKey';
 import {
   ExportAllDevicesToClipboardMessage,
@@ -26,7 +32,10 @@ export default class Application {
         };
         event.sender.send('message', message);
       });
-      this.readConfig(event.sender).catch((e) => { console.error(e); });
+      (async () => {
+        await prepareConfig();
+        await this.readConfig(event.sender);
+      })().catch((e) => { console.error(e); });
     });
   }
 
@@ -57,7 +66,7 @@ export default class Application {
       globalShortcut.register(`${config.modifierKey}+${key}`, () => {
         const message: SetSrcMessage = {
           type: 'setSrc',
-          src: `file://${__dirname}/../res/${config.sounds[key]}`,
+          src: `file://${app.getPath('userData')}/${config.sounds[key]}`,
           fileName: config.sounds[key],
         };
         webContents.send('message', message);

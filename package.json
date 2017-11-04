@@ -8,11 +8,13 @@
   "dependencies": {
     "asynckeystate": "^0.0.2",
     "copy-to-clipboard": "^3.0.8",
+    "fs-extra": "^4.0.2",
     "strip-json-comments": "^2.0.1"
   },
   "devDependencies": {
     "@progre/electron-packer": "^0.1.0",
     "@progre/tslint-config": "^5.1.0",
+    "@types/fs-extra": "^4.0.3",
     "@types/node": "^8.0.28",
     "@types/strip-json-comments": "^0.0.30",
     "copy-webpack-plugin": "^4.0.1",

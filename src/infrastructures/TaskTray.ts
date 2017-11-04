@@ -17,11 +17,11 @@ function createTray(exportAllDevicesToClipboard: () => void) {
       click: exportAllDevicesToClipboard,
     },
     {
-      label: 'Open config folter',
+      label: 'Open config folter...',
       click: () => { shell.showItemInFolder(app.getPath('userData')); },
     },
     { type: 'separator' },
-    { label: 'Quit', click: () => { app.quit(); } },
+    { label: 'Exit', click: () => { app.quit(); } },
   ]);
   tray.setContextMenu(contextMenu);
   return tray;
