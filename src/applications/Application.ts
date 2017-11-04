@@ -1,4 +1,4 @@
-import { app, BrowserWindow, dialog, globalShortcut, shell } from 'electron';
+import { dialog, globalShortcut } from 'electron';
 import {
   Config,
   fetch as fetchConfig,
