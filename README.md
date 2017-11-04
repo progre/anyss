@@ -1,8 +1,6 @@
 anyss
 ====
 
-[![Build Status](https://travis-ci.org/progre/anyss.svg?branch=master)](https://travis-ci.org/progre/anyss)
-
 Any game sound selector for sending to voice chat.
 
 Note: This project is under experiment. It may change user interface, config.json format, and/or others when updated.

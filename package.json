@@ -54,6 +54,7 @@
   "scripts": {
     "build": "run-p clean release-build",
     "clean": "del lib",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
     "commitmsg": "validate-commit-msg",
     "debug-build": "cross-env NODE_ENV=development webpack --progress",
     "package": "node ./pack.js",
