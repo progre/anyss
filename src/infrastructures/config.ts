@@ -19,7 +19,7 @@ export function openFolder() {
 
 export async function prepareConfig() {
   await copy(
-    `${__dirname}/res/config_default.json`,
+    `${__dirname}/res/config_template.json`,
     getPath(),
     { overwrite: false },
   );

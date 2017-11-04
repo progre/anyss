@@ -1,0 +1,35 @@
+{
+  // Voice chat key in game.
+  // Some symbols can not be used.
+  //
+  // Example:
+  //   Steam  --> ["Alt"]
+  //   PUBG   --> ["T"]
+  //   Deceit --> ["Alt", "V"]
+  "playKeys": [],
+
+  // Output target device name
+  // Use [tray icon] -> [Export all devices to clipboard]
+  //
+  // Example:
+  //   VB-Audio Virtual Cable   --> "CABLE Input (VB-Audio Virtual Cable)"
+  //     https://www.vb-audio.com/Cable/index.htm
+  //   Yamaha NETDUETTO Driver  --> "Line (Yamaha NETDUETTO Driver (WDM))"
+  //     http://netduetto.net/
+  "outputDevice": "",
+
+  // Modifier key to select sounds
+  //
+  // Example:
+  //   "Shift"
+  //   "Control+Shift"
+  "modifierKey": "",
+
+  // Sounds and keys
+  //
+  // Example:
+  //   "1": "sound1.wav",
+  //   "A": "sound2.ogg",
+  //   ";": "sound3.opus",
+  "sounds": {}
+}
