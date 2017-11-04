@@ -1,90 +1,52 @@
+import { globalShortcut } from 'electron';
 import {
-  app,
-  BrowserWindow,
-  globalShortcut,
-  ipcMain,
-  WebContents,
-} from 'electron';
-import { fetch as fetchConfig, prepareConfig } from '../infrastructures/config';
+  Config,
+  fetch as fetchConfig,
+  prepareConfig,
+} from '../infrastructures/config';
 import GlobalAsyncKey from '../infrastructures/GlobalAsyncKey';
-import {
-  ExportAllDevicesToClipboardMessage,
-  PlayMessage,
-  SelectDeviceForLabelMessage,
-  SetSrcMessage,
-  StopMessage,
-} from '../infrastructures/ipctypes';
+import MainWindow from '../infrastructures/MainWindow';
 import TaskTray from '../infrastructures/TaskTray';
 
 export default class Application {
   private globalAsyncKey: GlobalAsyncKey | null;
-  private windowHideTimer: NodeJS.Timer;
   // @ts-ignore
   private taskTray: TaskTray;
+  private win = new MainWindow();
 
-  constructor(
-    private win: BrowserWindow,
-  ) {
-    ipcMain.on('ready', (event: { sender: WebContents }) => {
-      this.taskTray = new TaskTray(() => {
-        const message: ExportAllDevicesToClipboardMessage = {
-          type: 'exportAllDevicesToClipboard',
-        };
-        event.sender.send('message', message);
-      });
+  constructor() {
+    this.win.ready.subscribe(() => {
+      this.taskTray = new TaskTray(() => { this.win.exportAllDevicesToClipboard(); });
       (async () => {
         await prepareConfig();
-        await this.readConfig(event.sender);
+        await this.readConfig();
       })().catch((e) => { console.error(e); });
     });
   }
 
-  release() {
+  private async readConfig() {
+    const config = await fetchConfig();
+    this.win.selectDeviceForLabel(config);
+    this.initGlobalAsyncKey(config);
+    this.initGlobalShortcut(config);
+  }
+
+  private initGlobalAsyncKey(config: Config) {
     if (this.globalAsyncKey != null) {
       this.globalAsyncKey.close();
     }
+    this.globalAsyncKey = new GlobalAsyncKey(config.playKeys);
+    this.globalAsyncKey.addEventListener('keydown', () => { this.win.play(); });
+    this.globalAsyncKey.addEventListener('keyup', () => { this.win.stop(); });
   }
 
-  async readConfig(webContents: WebContents) {
-    const config = await fetchConfig();
-    const selectDeviceForLabelMessage: SelectDeviceForLabelMessage = {
-      type: 'selectDeviceForLabel',
-      label: config.outputDevice,
-      withDefault: config.outputWithDefault,
-    };
-    webContents.send('message', selectDeviceForLabelMessage);
-    this.globalAsyncKey = new GlobalAsyncKey(config.playKeys);
-    this.globalAsyncKey.addEventListener('keydown', (e) => {
-      const message: PlayMessage = { type: 'play' };
-      webContents.send('message', message);
-    });
-    this.globalAsyncKey.addEventListener('keyup', (e) => {
-      const message: StopMessage = { type: 'stop' };
-      webContents.send('message', message);
-    });
+  private initGlobalShortcut(config: Config) {
+    globalShortcut.unregisterAll();
     Object.keys(config.sounds).forEach((key) => {
       globalShortcut.register(`${config.modifierKey}+${key}`, () => {
-        const message: SetSrcMessage = {
-          type: 'setSrc',
-          src: `file://${app.getPath('userData')}/${config.sounds[key]}`,
-          fileName: config.sounds[key],
-        };
-        webContents.send('message', message);
-        this.showWindow();
+        this.win.setSrc(config.sounds[key]);
+        this.win.showTimer();
       });
     });
-  }
-
-  private showWindow() {
-    if (this.windowHideTimer != null) {
-      clearTimeout(this.windowHideTimer);
-    }
-    this.win.showInactive();
-    this.windowHideTimer = <any>setTimeout(
-      () => {
-        this.win.hide();
-      },
-      3000,
-    );
   }
 }

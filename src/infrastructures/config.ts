@@ -11,14 +11,15 @@ export async function prepareConfig() {
   );
 }
 
+export interface Config {
+  playKeys: ReadonlyArray<string>;
+  outputWithDefault: boolean;
+  outputDevice: string;
+  modifierKey: string;
+  sounds: { [key: string]: string; };
+}
+
 export async function fetch() {
-  type Config = {
-    playKeys: ReadonlyArray<string>;
-    outputWithDefault: boolean;
-    outputDevice: string;
-    modifierKey: string;
-    sounds: { [key: string]: string; }
-  };
   return new Promise<Config>((resolve, reject) => {
     fs.readFile(
       `${app.getPath('userData')}/config.json`,

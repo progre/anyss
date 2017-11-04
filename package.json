@@ -9,6 +9,7 @@
     "asynckeystate": "^0.0.2",
     "copy-to-clipboard": "^3.0.8",
     "fs-extra": "^4.0.2",
+    "rxjs": "^5.5.2",
     "strip-json-comments": "^2.0.1"
   },
   "devDependencies": {
