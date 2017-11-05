@@ -9,6 +9,7 @@ import {
 import GlobalAsyncKey from '../infrastructures/GlobalAsyncKey';
 import MainWindow from '../infrastructures/MainWindow';
 import TaskTray from '../infrastructures/TaskTray';
+import { serve } from '../remote/server';
 
 export default class Application {
   private globalAsyncKey: GlobalAsyncKey | null;
@@ -29,6 +30,7 @@ export default class Application {
         startConfigWatch().subscribe(() => {
           this.readConfig().catch((e) => { console.error(e); });
         });
+        await serve(8080, true);
       })().catch((e) => { console.error(e); });
     });
   }
