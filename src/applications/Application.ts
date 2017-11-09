@@ -8,14 +8,17 @@ import {
 } from '../infrastructures/config';
 import GlobalAsyncKey from '../infrastructures/GlobalAsyncKey';
 import MainWindow from '../infrastructures/MainWindow';
+import RemoteController from '../infrastructures/RemoteController';
 import TaskTray from '../infrastructures/TaskTray';
-import { serve } from '../remote/server';
 
 export default class Application {
+  private config: Config | null;
   private globalAsyncKey: GlobalAsyncKey | null;
   // @ts-ignore
   private taskTray: TaskTray;
   private win = new MainWindow();
+  // @ts-ignore
+  private remoteController: RemoteController;
 
   constructor() {
     this.win.ready.subscribe(() => {
@@ -28,24 +31,36 @@ export default class Application {
       (async () => {
         await prepareConfig();
         startConfigWatch().subscribe(() => {
-          this.readConfig().catch((e) => { console.error(e); });
+          (async () => {
+            await this.readConfig();
+            // tslint:disable-next-line:no-var-self
+            this.remoteController = new RemoteController({
+              getSounds: () => {
+                return Object.values(this.config!.sounds).map(x => ({
+                  fileName: x,
+                  tags: ['default'],
+                }));
+              },
+              setSrc: (fileName: string) => {
+                this.win.setSrc(fileName);
+              },
+            });
+          })().catch((e) => { console.error(e); });
         });
-        await serve(8080, true);
       })().catch((e) => { console.error(e); });
     });
   }
 
   private async readConfig() {
-    let config;
     try {
-      config = await fetchConfig();
+      this.config = await fetchConfig();
     } catch (e) {
       showConfigErrorDialog(e);
       return;
     }
-    this.win.selectDeviceForLabel(config);
-    this.initGlobalAsyncKey(config);
-    this.initGlobalShortcut(config);
+    this.win.selectDeviceForLabel(this.config);
+    this.initGlobalAsyncKey(this.config);
+    this.initGlobalShortcut(this.config);
   }
 
   private initGlobalAsyncKey(config: Config) {

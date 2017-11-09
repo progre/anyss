@@ -47,6 +47,28 @@ const clientSide = {
   target: 'electron-renderer',
 };
 
+const remote = {
+  entry: {
+    index: './src/remote/js/index.tsx'
+  },
+  module: tsLoader,
+  output: { filename: 'lib/remote/js/[name].js' },
+  plugins: [
+    new CopyWebpackPlugin(
+      [{ from: 'src/', to: 'lib/' }],
+      { ignore: ['test/', '*.ts', '*.tsx'] },
+    ),
+    ...(
+      !isProduction ? [] : [
+        new webpack.optimize.UglifyJsPlugin({
+          output: { comments: uglifySaveLicense }
+        })
+      ]
+    )
+  ],
+  target: 'web',
+};
+
 const serverSide = {
   entry: {
     index: './src/index.ts'
@@ -59,5 +81,6 @@ const serverSide = {
 
 module.exports = [
   { ...common, ...clientSide },
+  { ...common, ...remote },
   { ...common, ...serverSide },
 ];
