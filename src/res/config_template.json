@@ -19,6 +19,7 @@
   "outputDevice": "",
 
   // Modifier key to select sounds
+  // If empty then disable global shortcut keys
   //
   // Example:
   //   "Shift"
@@ -28,8 +29,13 @@
   // Sounds and keys
   //
   // Example:
-  //   "1": "sound1.wav",
-  //   "A": "sound2.ogg",
-  //   ";": "sound3.opus",
-  "sounds": {}
+  // {
+  //   "fileName": "sound1.wav",
+  //   "combinationKey": "A",    // option
+  //   "tags": [                 // option
+  //     "deceit",
+  //     "blood"
+  //   ]
+  // }
+  "sounds": []
 }
