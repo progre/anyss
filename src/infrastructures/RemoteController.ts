@@ -6,6 +6,7 @@ export default class RemoteController {
   private server: any;
 
   constructor(
+    public port: number,
     private delegate: {
       getSounds(): ReadonlyArray<{
         readonly fileName: string;
@@ -28,11 +29,15 @@ export default class RemoteController {
       return {};
     });
 
-    this.server.listen(80, (err: Error) => {
+    this.server.listen(port, (err: Error) => {
       if (err != null) {
-        throw err;
+        console.error(err.stack || err);
+        return;
       }
-      console.log('> Ready on http://localhost');
     });
+  }
+
+  close() {
+    this.server.close();
   }
 }

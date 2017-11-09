@@ -17,7 +17,6 @@ export default class Application {
   // @ts-ignore
   private taskTray: TaskTray;
   private win = new MainWindow();
-  // @ts-ignore
   private remoteController: RemoteController;
 
   constructor() {
@@ -33,22 +32,7 @@ export default class Application {
         startConfigWatch().subscribe(() => {
           (async () => {
             await this.readConfig();
-            // tslint:disable-next-line:no-var-self
-            this.remoteController = new RemoteController({
-              getSounds: () => {
-                return this.config!.sounds.map(x => ({
-                  fileName: x.fileName,
-                  tags: (
-                    x.tags == null || x.tags.length === 0
-                      ? ['default']
-                      : x.tags
-                  ),
-                }));
-              },
-              setSrc: (fileName: string) => {
-                this.win.setSrc(fileName);
-              },
-            });
+            this.initRemoteController();
           })().catch((e) => { console.error(e); });
         });
       })().catch((e) => { console.error(e); });
@@ -90,6 +74,35 @@ export default class Application {
         });
       });
   }
+
+  private initRemoteController() {
+    if (!isValidTCPPort(this.config!.remoteControllerPort)) {
+      return;
+    }
+    if (this.remoteController != null) {
+      if (this.config!.remoteControllerPort === this.remoteController.port) {
+        return;
+      }
+      this.remoteController.close();
+    }
+    this.remoteController = new RemoteController(
+      this.config!.remoteControllerPort!,
+      {
+        getSounds: () => {
+          return this.config!.sounds.map(x => ({
+            fileName: x.fileName,
+            tags: (
+              x.tags == null || x.tags.length === 0
+                ? ['default']
+                : x.tags
+            ),
+          }));
+        },
+        setSrc: (fileName: string) => {
+          this.win.setSrc(fileName);
+        },
+      });
+  }
 }
 
 function showConfigErrorDialog(e: Error) {
@@ -107,4 +120,8 @@ function showConfigErrorDialog(e: Error) {
       openFolder();
     },
   );
+}
+
+function isValidTCPPort(num: number | undefined) {
+  return num != null && 0 < num && num <= 65535;
 }

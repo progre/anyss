@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 import * as stripJsonComments from 'strip-json-comments';
 
 export interface Config {
+  readonly remoteControllerPort?: number;
   readonly playKeys: ReadonlyArray<string>;
   readonly outputWithDefault: boolean;
   readonly outputDevice: string;

@@ -1,4 +1,9 @@
 {
+  // Remote controller on browser
+  //
+  // Example, when set 26977, try access http://localhost:26977
+  "remoteControllerPort": 26977,
+
   // Voice chat key in game.
   // Some symbols can not be used.
   //
