@@ -78,7 +78,7 @@ export default class Application {
 
   private initGlobalShortcut(config: Config) {
     globalShortcut.unregisterAll();
-    if (config.modifierKey == null) {
+    if (config.modifierKey == null || config.modifierKey.length === 0) {
       return;
     }
     config.sounds
