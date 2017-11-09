@@ -36,9 +36,13 @@ export default class Application {
             // tslint:disable-next-line:no-var-self
             this.remoteController = new RemoteController({
               getSounds: () => {
-                return Object.values(this.config!.sounds).map(x => ({
-                  fileName: x,
-                  tags: ['default'],
+                return this.config!.sounds.map(x => ({
+                  fileName: x.fileName,
+                  tags: (
+                    x.tags == null || x.tags.length === 0
+                      ? ['default']
+                      : x.tags
+                  ),
                 }));
               },
               setSrc: (fileName: string) => {
@@ -74,12 +78,17 @@ export default class Application {
 
   private initGlobalShortcut(config: Config) {
     globalShortcut.unregisterAll();
-    Object.keys(config.sounds).forEach((key) => {
-      globalShortcut.register(`${config.modifierKey}+${key}`, () => {
-        this.win.setSrc(config.sounds[key]);
-        this.win.showTimer();
+    if (config.modifierKey == null) {
+      return;
+    }
+    config.sounds
+      .filter(x => x.combinationKey != null)
+      .forEach((sound) => {
+        globalShortcut.register(`${config.modifierKey!}+${sound.combinationKey!}`, () => {
+          this.win.setSrc(sound.fileName);
+          this.win.showTimer();
+        });
       });
-    });
   }
 }
 

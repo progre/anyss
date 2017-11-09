@@ -6,11 +6,15 @@ import { Observable } from 'rxjs';
 import * as stripJsonComments from 'strip-json-comments';
 
 export interface Config {
-  playKeys: ReadonlyArray<string>;
-  outputWithDefault: boolean;
-  outputDevice: string;
-  modifierKey: string;
-  sounds: { [key: string]: string; };
+  readonly playKeys: ReadonlyArray<string>;
+  readonly outputWithDefault: boolean;
+  readonly outputDevice: string;
+  readonly modifierKey?: string;
+  readonly sounds: ReadonlyArray<{
+    readonly fileName: string;
+    readonly combinationKey?: string;
+    readonly tags?: ReadonlyArray<string>;
+  }>;
 }
 
 export function openFolder() {
