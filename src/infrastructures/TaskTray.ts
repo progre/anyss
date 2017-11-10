@@ -1,5 +1,10 @@
-import { app, Menu, Tray } from 'electron';
+// tslint:disable-next-line:variable-name
+const Datauri = require('datauri');
+import { app, BrowserWindow, Menu, Tray } from 'electron';
 const getLocalIp = require('node-localip');
+import * as qr from 'qr-image';
+
+const ICON_PATH = `${__dirname}/res/icon.png`;
 
 export default class TaskTray {
   // @ts-ignore
@@ -11,7 +16,7 @@ export default class TaskTray {
       exportAllDevicesToClipboard(): void,
       openFolder(): void,
     }) {
-    this.tray = new Tray(`${__dirname}/res/icon.png`);
+    this.tray = new Tray(ICON_PATH);
     this.updatePort(port).catch((e) => { console.error(e.stack || e); });
   }
 
@@ -27,9 +32,9 @@ async function createMenu(
     openFolder(): void,
   },
 ) {
-  let ipList: string[] | null = null;
+  let urls;
   if (port != null) {
-    ipList = await new Promise<string[]>((resolve, reject) => {
+    const ipList = await new Promise<string[]>((resolve, reject) => {
       getLocalIp.list((err: Error, data: string[]) => {
         if (err != null) {
           reject(err);
@@ -39,14 +44,15 @@ async function createMenu(
       });
     });
     // tslint:disable-next-line:no-http-string
-    ipList = ipList.map(x => `http://${x}:${port}`);
+    urls = ipList.map(x => `http://${x}:${port}`);
   }
   return Menu.buildFromTemplate([
     {
       label: 'Remote controller',
-      enabled: ipList != null,
-      submenu: ipList == null ? undefined : ipList.map(ip => ({
-        label: ip,
+      enabled: urls != null,
+      submenu: urls == null ? undefined : urls.map(url => ({
+        label: `${url} ...`,
+        click() { openQRCodeWindow(url); },
       })),
     },
     { type: 'separator' },
@@ -62,7 +68,27 @@ async function createMenu(
     { type: 'separator' },
     {
       label: 'Exit',
-      click: () => { app.quit(); },
+      click() { app.quit(); },
     },
   ]);
+}
+
+function openQRCodeWindow(url: string) {
+  const datauri = new Datauri();
+  datauri.format('.png', <Buffer>qr.imageSync(url, { type: 'png' }));
+  const win = new BrowserWindow({
+    alwaysOnTop: true,
+    height: 300,
+    icon: ICON_PATH,
+    minimizable: false,
+    maximizable: false,
+    resizable: false,
+    skipTaskbar: true,
+    title: `${url} - anyss`,
+    width: 300,
+  });
+  win.addListener('page-title-updated', (e) => {
+    e.preventDefault();
+  });
+  win.loadURL(datauri.content);
 }
