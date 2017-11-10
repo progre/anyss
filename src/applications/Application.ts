@@ -21,17 +21,21 @@ export default class Application {
 
   constructor() {
     this.win.ready.subscribe(() => {
-      this.taskTray = new TaskTray({
-        openFolder,
-        exportAllDevicesToClipboard: () => {
-          this.win.exportAllDevicesToClipboard();
+      this.taskTray = new TaskTray(
+        null,
+        {
+          openFolder,
+          exportAllDevicesToClipboard: () => {
+            this.win.exportAllDevicesToClipboard();
+          },
         },
-      });
+      );
       (async () => {
         await prepareConfig();
         startConfigWatch().subscribe(() => {
           (async () => {
             await this.readConfig();
+            await this.taskTray.updatePort(this.config!.remoteControllerPort!);
             this.initRemoteController();
           })().catch((e) => { console.error(e); });
         });
