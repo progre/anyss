@@ -91,4 +91,9 @@ function openQRCodeWindow(url: string) {
     e.preventDefault();
   });
   win.loadURL(datauri.content);
+  win.webContents.executeJavaScript(
+    `document.addEventListener('click', () => {`
+    + `require('electron').shell.openExternal('${url}');`
+    + '})',
+  ).catch((e) => { console.error(e); });
 }
