@@ -1,6 +1,7 @@
 import Grid from 'material-ui/Grid';
-import List, { ListItem, ListItemText } from 'material-ui/List';
 import * as React from 'react';
+import SoundList from './SoundList';
+import TagList from './TagList';
 
 export interface Props {
   readonly sounds: ReadonlyArray<{
@@ -19,6 +20,9 @@ export interface State {
 export default class DualList extends React.Component<Props, State> {
   constructor() {
     super();
+    this.onTagSelect = this.onTagSelect.bind(this);
+    this.onFileNameSelect = this.onFileNameSelect.bind(this);
+
     this.state = {
       selectedTag: 'default',
       selectedFileName: '',
@@ -37,49 +41,31 @@ export default class DualList extends React.Component<Props, State> {
       <div>
         <Grid container spacing={24}>
           <Grid item xs={4}>
-            <List>
-              {tags.map((x, i) => (
-                <ListItem
-                  button
-                  key={i}
-                  style={
-                    this.state.selectedTag !== x ? {} : {
-                      backgroundColor: '#E8E8E8',
-                    }
-                  }
-                  onClickCapture={(() => {
-                    this.setState({ ...this.state, selectedTag: x });
-                  }) as any}
-                >
-                  <ListItemText primary={x} />
-                </ListItem>
-              ))}
-            </List>
+            <TagList
+              items={tags}
+              selectedItem={this.state.selectedTag}
+              onSelect={this.onTagSelect}
+            />
           </Grid>
           <Grid item xs={8}>
-            <List>
-              {fileNames.map((x, i) => (
-                <ListItem
-                  button
-                  key={i}
-                  style={
-                    this.state.selectedFileName !== x ? {} : {
-                      backgroundColor: '#E8E8E8',
-                    }
-                  }
-                  onClickCapture={(() => {
-                    this.props.onFileNameClick(x);
-                    this.setState({ ...this.state, selectedFileName: x });
-                  }) as any}
-                >
-                  <ListItemText primary={x} />
-                </ListItem>
-              ))}
-            </List>
+            <SoundList
+              items={fileNames}
+              selectedItem={this.state.selectedFileName}
+              onSelect={this.onFileNameSelect}
+            />
           </Grid>
         </Grid>
       </div>
     );
+  }
+
+  private onTagSelect(selectedTag: string) {
+    this.setState({ ...this.state, selectedTag });
+  }
+
+  private onFileNameSelect(selectedFileName: string) {
+    this.props.onFileNameClick(selectedFileName);
+    this.setState({ ...this.state, selectedFileName });
   }
 }
 
