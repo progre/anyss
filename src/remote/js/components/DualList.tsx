@@ -12,28 +12,29 @@ export interface Props {
   onFileNameClick(fileName: string): void;
 }
 
-export interface State {
-  readonly selectedTag: string;
-  readonly selectedFileName: string;
-}
+export const INITIAL_STATE = {
+  selectedTag: 'default',
+  selectedFileName: '',
+  lockedTags: [] as ReadonlyArray<string>,
+};
 
-export default class DualList extends React.Component<Props, State> {
+export default class DualList extends React.Component<Props, typeof INITIAL_STATE> {
   constructor() {
     super();
     this.onTagSelect = this.onTagSelect.bind(this);
+    this.onLock = this.onLock.bind(this);
     this.onFileNameSelect = this.onFileNameSelect.bind(this);
 
-    this.state = {
-      selectedTag: 'default',
-      selectedFileName: '',
-    };
+    this.state = INITIAL_STATE;
   }
 
   render() {
+    const lockFilteredSounds = this.props.sounds
+      .filter(x => this.state.lockedTags.every(lockedTag => x.tags.includes(lockedTag)));
     const tags = uniqueSort(
       (this.props.sounds.map(x => x.tags) as string[][]).reduce((a, b) => [...a, ...b]),
     );
-    const fileNames = this.props.sounds
+    const fileNames = lockFilteredSounds
       .filter(x => x.tags.includes(this.state.selectedTag))
       .map(x => x.fileName);
     fileNames.sort();
@@ -42,8 +43,15 @@ export default class DualList extends React.Component<Props, State> {
         <Grid container spacing={24}>
           <Grid item xs={4}>
             <TagList
-              items={tags}
+              items={tags.map(x => (
+                {
+                  tag: x,
+                  lock: this.state.lockedTags.includes(x),
+                  disabled: !lockFilteredSounds.some(sound => sound.tags.includes(x)),
+                }
+              ))}
               selectedItem={this.state.selectedTag}
+              onLock={this.onLock}
               onSelect={this.onTagSelect}
             />
           </Grid>
@@ -61,6 +69,15 @@ export default class DualList extends React.Component<Props, State> {
 
   private onTagSelect(selectedTag: string) {
     this.setState({ ...this.state, selectedTag });
+  }
+
+  private onLock(tag: string, lock: boolean) {
+    this.setState({
+      ...this.state,
+      lockedTags: lock
+        ? [...this.state.lockedTags, tag]
+        : this.state.lockedTags.filter(x => x !== tag),
+    });
   }
 
   private onFileNameSelect(selectedFileName: string) {
