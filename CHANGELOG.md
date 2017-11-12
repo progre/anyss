@@ -1,3 +1,13 @@
+<a name="0.3.0"></a>
+# [0.3.0](https://github.com/progre/anyss/compare/0.2.0...0.3.0) (2017-11-12)
+
+
+### Features
+
+* add lock function ([ace7807](https://github.com/progre/anyss/commit/ace7807))
+
+
+
 <a name="0.2.0"></a>
 # [0.2.0](https://github.com/progre/anyss/compare/0.1.0...0.2.0) (2017-11-10)
 
