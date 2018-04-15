@@ -41,3 +41,15 @@ Usage
 2. Push configured **modifier key** + **combination key**
 3. Push VC key on your game
 4. **Your sound will flow to Voice Chat!**
+
+----
+
+Build
+----
+
+- Require https://github.com/felixrieseberg/windows-build-tools
+
+```
+$ npm install
+$ npm run build
+```
