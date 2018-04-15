@@ -5,6 +5,8 @@ Any game sound selector for sending to voice chat.
 
 Note: This project is under experiment. It may change user interface, config.json format, and/or others when updated.
 
+### [Download](https://github.com/progre/anyss/releases)
+
 TL;DR
 ----
 
